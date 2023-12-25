@@ -28,21 +28,22 @@ public class PotentialFlowOverCylinder implements VectorFunction, Drawable
 
     public Point2D.Double Evaluate(double x, double y)
     {
-        // radius of cylinder
         x -= this.x;
         y -= this.y;
 
         double x2 = x * x;
         double y2 = y * y;
-
-
-
         double r2 = r * r;
 
-        double vx = 1.0 - r2 * (x2 - y2) / (x2 + y2) / (x2 + y2);
-        double vy = -2.0 * r2 * x * y / (x2 + y2) / (x2 + y2);
+        double vx = u * (1.0 - r2 * (x2 - y2) / (x2 + y2) / (x2 + y2));
+        double vy = u * (-2.0 * r2 * x * y / (x2 + y2) / (x2 + y2));
 
+        // Equation for potential flow over a cylinder:
+        //    (1 - r^2 (x^2 - y^2) / (x^2 + y^2)^2, -2 r^2 x y / (x^2 + y^2)^2)
+        //   mathbf V(x,y)=U\,\left(\frac{1 - R^2 (x^2 - y^2)}{(x^2 + y^2)^2}\,\mathbf i+\frac{-2R^2xy}{(x^2 + y^2)^2})\,\mathbf j\right)
 
-        return new Point2D.Double(vx * u - u, vy * u);
+        // We also need to subtract the uniform flow from the cylinder flow.
+        // This is because the uniform flow will be added to the combined flow of the field.
+        return new Point2D.Double(vx - u, vy);
     };
 }
